@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 flex justify-center items-center min-h-screen">
+
+    <!-- Profile Edit Modal -->
+    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg relative">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Edit Profile</h2>
+
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <p class="text-center text-{{ message.tags }}-600 font-semibold">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="max-h-[70vh] overflow-y-auto p-2">
+                <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                    {% csrf_token %}
+
+                    #PROFILE PIC:
+                    <div class="flex flex-col items-center">
+                        <label for="profile-pic" class="cursor-pointer">
+                            <img id="profile-preview" src="{{ user.profile_image.url }}" 
+                                class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg object-cover transition duration-300 hover:opacity-80" 
+                                onerror="this.src='https://via.placeholder.com/150'" />
+                        </label>
+                        <input type="file" id="profile-pic" name="profile_image" class="hidden" accept="image/*" 
+                            onchange="previewImage(event)">
+                        <p class="text-sm text-gray-500 mt-2">Click to change profile picture</p>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div class="space-y-2">
+                        <label class="text-gray-700 font-medium">Username</label>
+                        {{ form.username }}
+                    </div>
+
+                    <!-- Add this before the First Name field -->
+                    <div class="space-y-2">
+                        <label class="text-gray-700 font-medium">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-gray-700 font-medium">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-gray-700 font-medium">Email</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-gray-700 font-medium">College Name</label>
+                        {{ form.college_name }}
+                    </div>
+
+                    <!-- Role Dropdown -->
+                    <div class="space-y-2">
+                        <label class="text-gray-700 font-medium">Role</label>
+                        {{ form.role }}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-6 py-3 rounded-lg 
+                                hover:scale-105 transition-transform shadow-md font-semibold text-lg">
+                        Save Changes
+                    </button>
+                </form>
+            </div>
+
+            <!-- 🔹 Links to Home & Close Modal -->
+            <div class="flex justify-between mt-6">
+                <a href="{% url 'home' %}" class="text-blue-600 font-medium hover:underline text-lg">🏠 Home</a>
+                <button onclick="closeModal()" class="text-red-600 font-medium hover:underline text-lg">✖ Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('profile-preview');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function closeModal() {
+            window.location.href = "{% url 'my_account' %}";
+        }
+    </script>
+
+</body>
+</html>

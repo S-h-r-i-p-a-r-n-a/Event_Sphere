@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Event Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen py-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Header Section with Background -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-32 relative">
+                <div class="absolute -bottom-16 left-8">
+                    <div class="relative">
+                        <img 
+                            src="{% if user.profile_image and user.profile_image.url %}{{ user.profile_image.url }}{% else %}/media/profile_images/default.png{% endif %}" 
+                            alt="Profile Image" 
+                            class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover transition-transform hover:scale-105"
+                        >
+                        <a href="{% url 'edit_profile' %}" class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-camera"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Information -->
+            <div class="pt-20 px-8 pb-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">{{ user.first_name }} {{ user.last_name }}</h1>
+                        <p class="text-gray-600 flex items-center mt-1">
+                            <i class="fas fa-envelope mr-2"></i>
+                            {{ user.email }}
+                        </p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a href="{% url 'edit_profile' %}" 
+                           class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-edit mr-2"></i> Edit Profile
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Profile Details Card -->
+                <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Profile Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% if user.college_name %}
+                        <div class="flex items-center">
+                            <i class="fas fa-university text-gray-400 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-gray-500">College</p>
+                                <p class="text-gray-900">{{ user.college_name }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="flex items-center">
+                            <i class="fas fa-user-tag text-gray-400 mr-3"></i>
+                            <div>
+                                <p class="text-sm text-gray-500">Role</p>
+                                <p class="text-gray-900">{{ user.role }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col space-y-3">
+                    <a href="{% url 'delete_profile' %}" 
+                       onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');" 
+                       class="inline-flex items-center justify-center px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors">
+                        <i class="fas fa-user-times mr-2"></i> Delete Account
+                    </a>
+                    <a href="{% url 'logout' %}" 
+                       class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add smooth scrolling and transitions -->
+    <style>
+        * {
+            transition: all 0.3s ease-in-out;
+        }
+        .container {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>
