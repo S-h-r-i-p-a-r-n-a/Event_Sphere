@@ -25,15 +25,16 @@
                 <form method="POST" enctype="multipart/form-data" class="space-y-4">
                     {% csrf_token %}
 
-                    #PROFILE PIC:
+                    <!-- Profile Picture -->
                     <div class="flex flex-col items-center">
                         <label for="profile-pic" class="cursor-pointer">
-                            <img id="profile-preview" src="{{ user.profile_image.url }}" 
-                                class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg object-cover transition duration-300 hover:opacity-80" 
-                                onerror="this.src='https://via.placeholder.com/150'" />
+                            <img id="profile-preview" 
+                                 src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}/media/profile_images/default.png{% endif %}" 
+                                 class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg object-cover transition duration-300 hover:opacity-80" 
+                                 onerror="this.src='/media/profile_images/default.png'" />
                         </label>
                         <input type="file" id="profile-pic" name="profile_image" class="hidden" accept="image/*" 
-                            onchange="previewImage(event)">
+                               onchange="previewImage(event)">
                         <p class="text-sm text-gray-500 mt-2">Click to change profile picture</p>
                     </div>
 
@@ -43,7 +44,6 @@
                         {{ form.username }}
                     </div>
 
-                    <!-- Add this before the First Name field -->
                     <div class="space-y-2">
                         <label class="text-gray-700 font-medium">First Name</label>
                         {{ form.first_name }}
@@ -64,7 +64,6 @@
                         {{ form.college_name }}
                     </div>
 
-                    <!-- Role Dropdown -->
                     <div class="space-y-2">
                         <label class="text-gray-700 font-medium">Role</label>
                         {{ form.role }}

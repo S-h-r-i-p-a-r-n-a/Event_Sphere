@@ -12,7 +12,7 @@ class EventForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['profile_image', 'username', 'first_name', 'last_name', 'email', 'college_name', 'role']
+        fields = ['username', 'first_name', 'last_name', 'email', 'college_name', 'role', 'profile_image']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg'}),
             'first_name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg'}),
@@ -24,9 +24,6 @@ class ProfileUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProfileUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['username'].required = False
-        self.fields['email'].required = False
-        self.fields['first_name'].required = False
-        self.fields['last_name'].required = False
-        self.fields['college_name'].required = False
-        self.fields['role'].required = False
+        # Make all fields optional
+        for field in self.fields:
+            self.fields[field].required = False

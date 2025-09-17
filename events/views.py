@@ -85,14 +85,26 @@ def event_list(request):
 def register_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     
-    if event.is_approved:
-        if not Registration.objects.filter(event=event, student=request.user).exists():
-            Registration.objects.create(event=event, student=request.user)
-            messages.success(request, "Successfully registered for the event!")
-        else:
-            messages.warning(request, "You have already registered for this event.")
+    # Check if user has already registered
+    if Registration.objects.filter(event=event, student=request.user).exists():
+        messages.warning(request, "You have already registered for this event.")
+        return redirect("home")
     
-    return redirect("home")
+    if request.method == "POST":
+        # Create registration
+        registration = Registration.objects.create(
+            event=event,
+            student=request.user
+        )
+        
+        messages.success(request, "Successfully registered for the event!")
+        return redirect("home")
+    
+    # Render the registration form template
+    return render(request, "register_event.html", {
+        "event": event,
+        "user": request.user
+    })
 
 # USER ACCOUNT
 @login_required
@@ -102,56 +114,21 @@ def my_account(request):
 # EDIT PROFILE
 @login_required
 def edit_profile(request):
-    user = request.user  # Get the logged-in user
+    user = request.user
 
     if request.method == "POST":
         form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
-
         if form.is_valid():
-            new_username = form.cleaned_data.get("username").strip()
-
-            # 🔹 Check if username exists (excluding the logged-in user)
-            if CustomUser.objects.filter(username=new_username).exclude(id=user.id).exists():
-                messages.error(request, "Username already taken. Choose another one.")
-                return render(request, "edit_profile.html", {"form": form})
-
-            # 🔹 Update only changed fields
-            updated_fields = []
-            if user.username != new_username:
-                user.username = new_username
-                updated_fields.append("username")
-            if "profile_image" in form.cleaned_data and form.cleaned_data["profile_image"]:
-                user.profile_image = form.cleaned_data["profile_image"]
-                updated_fields.append("profile_image")
-            if user.first_name != form.cleaned_data["first_name"]:
-                user.first_name = form.cleaned_data["first_name"]
-                updated_fields.append("first_name")
-            if user.last_name != form.cleaned_data["last_name"]:
-                user.last_name = form.cleaned_data["last_name"]
-                updated_fields.append("last_name")
-            if user.email != form.cleaned_data["email"]:
-                user.email = form.cleaned_data["email"]
-                updated_fields.append("email")
-            if user.college_name != form.cleaned_data["college_name"]:
-                user.college_name = form.cleaned_data["college_name"]
-                updated_fields.append("college_name")
-            if user.role != form.cleaned_data["role"]:
-                user.role = form.cleaned_data["role"]
-                updated_fields.append("role")
-
-            if updated_fields:
-                user.save(update_fields=updated_fields)  # Save only updated fields
-            
+            # Save the form directly since we're using ModelForm
+            form.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect("my_account")  # Redirect to profile page
-
+            return redirect("my_account")
         else:
             messages.error(request, "Please correct the errors below.")
-
     else:
-        form = ProfileUpdateForm(instance=user)  # Pre-fill form with current user data
+        form = ProfileUpdateForm(instance=user)
 
-    return render(request, "edit_profile.html", {"form": form})  # Ensure a response is returned
+    return render(request, "edit_profile.html", {"form": form})
 
 
 # DELETE PROFILE

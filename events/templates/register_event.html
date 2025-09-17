@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for Event - {{ event.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-700 text-white py-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-5">
+            <h1 class="text-2xl font-bold">EVENT SPHERE</h1>
+            <a href="/" class="hover:text-yellow-300">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-8">
+        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Register for {{ event.title }}</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-700">Event Details</h3>
+                <p class="text-gray-600 mt-2">{{ event.description }}</p>
+                <p class="text-gray-600 mt-2">📅 Date: {{ event.date }}</p>
+                <p class="text-gray-600 mt-2">📍 Venue: {{ event.venue }}</p>
+            </div>
+
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="space-y-2">
+                    <label for="name" class="block text-gray-700">Full Name</label>
+                    <input type="text" id="name" name="name" value="{{ user.get_full_name }}" 
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                           readonly>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="email" class="block text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                           readonly>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="college" class="block text-gray-700">College Name</label>
+                    <input type="text" id="college" name="college" value="{{ user.college_name }}"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                           readonly>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="additional_info" class="block text-gray-700">Additional Information (Optional)</label>
+                    <textarea id="additional_info" name="additional_info" rows="4"
+                              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                              placeholder="Any additional information you'd like to share..."></textarea>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Confirm Registration
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="bg-blue-800 text-white text-center py-4 mt-8">
+        <p>© 2025 College Events | Designed by -> SHRIPARNA</p>
+    </footer>
+</body>
+</html>
