@@ -88,7 +88,10 @@ def register_event(request, event_id):
     # Check if user has already registered
     if Registration.objects.filter(event=event, student=request.user).exists():
         messages.warning(request, "You have already registered for this event.")
-        return redirect("home")
+        return render(request, "register_event.html", {
+            "event": event,
+            "user": request.user
+        })
     
     if request.method == "POST":
         # Create registration

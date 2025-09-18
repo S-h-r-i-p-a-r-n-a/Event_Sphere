@@ -25,7 +25,7 @@
                 <p class="text-gray-600 mt-2">📍 Venue: {{ event.venue }}</p>
             </div>
 
-            <form method="POST" class="space-y-4">
+            <form method="POST" class="space-y-4" id="registrationForm">
                 {% csrf_token %}
                 
                 <div class="space-y-2">
@@ -64,8 +64,83 @@
         </div>
     </div>
 
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center">
+                <!-- Success Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <svg class="h-10 w-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                
+                <!-- Success Message -->
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Registration Successful!</h3>
+                <p class="text-gray-600 mb-6">You have successfully registered for {{ event.title }}.</p>
+                
+                <!-- Buttons -->
+                <div class="flex justify-center space-x-4">
+                    <a href="{% url 'home' %}" 
+                       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Already Registered Modal -->
+    <div id="alreadyRegisteredModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center">
+                <!-- Warning Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <svg class="h-10 w-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+
+                <!-- Error Message -->
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Already Registered!</h3>
+                <p class="text-gray-600 mb-6">You have already registered for {{ event.title }}.</p>
+
+                <!-- Button -->
+                <div class="flex justify-center">
+                    <a href="{% url 'home' %}" 
+                       class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-blue-800 text-white text-center py-4 mt-8">
         <p>© 2025 College Events | Designed by -> SHRIPARNA</p>
     </footer>
+
+   <script>
+    // Show modal depending on Django messages
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    document.getElementById('successModal').classList.remove('hidden');
+                {% elif message.tags == 'warning' %}
+                    document.getElementById('alreadyRegisteredModal').classList.remove('hidden');
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    });
+
+    // Handle form submission
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        // Allow form to submit normally
+        return true;
+    });
+</script>
+
 </body>
 </html>
